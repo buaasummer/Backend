@@ -39,6 +39,13 @@ public class Meeting {
     //注册费用
     private String registrationFee;
 
+    //住宿交通
+    private String accommodationAndTraffic;
+
+    //邮箱（联系我们）
+    private String email;
+
+
     public int getMeetingId() {
         return meetingId;
     }
@@ -134,11 +141,4 @@ public class Meeting {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    //住宿交通
-    private String accommodationAndTraffic;
-
-    //邮箱（联系我们）
-    private String email;
-
 }
