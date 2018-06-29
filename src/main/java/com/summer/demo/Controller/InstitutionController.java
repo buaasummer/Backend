@@ -17,7 +17,7 @@ import javax.servlet.http.*;
 @CrossOrigin
 @RestController
 public class InstitutionController{
-    private String filePath="C:\\Users\\Administrator\\Documents\\uploads\\";
+    private String filePath="C:\\Users\\Administrator\\Documents\\summer\\uploads\\";
 
     @Autowired
     private InstitutionUserRepository userRepo;
