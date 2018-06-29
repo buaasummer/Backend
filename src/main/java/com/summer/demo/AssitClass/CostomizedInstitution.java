@@ -19,6 +19,16 @@ public class CostomizedInstitution {
 
     private String institutionCode;
 
+    private String downloadurl;
+
+    public String getDownloadurl() {
+        return downloadurl;
+    }
+
+    public void setDownloadurl(String downloadurl) {
+        this.downloadurl = downloadurl;
+    }
+
     public String getUsername() {
         return username;
     }

@@ -1,9 +1,9 @@
 package com.summer.demo.Repository;
-import com.summer.demo.Entity.PersonalUser;
+import com.summer.demo.Entity.InstitutionUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface InstitutionUserRepository extends JpaRepository<PersonalUser,Integer> {
+public interface InstitutionUserRepository extends JpaRepository<InstitutionUser,Integer> {
     @Query("select COUNT(u) from InstitutionUser u where u.username=?1")
-    public int getNumberOfusername(String username);
+    public int getNumberOfUsername(String username);
 }
