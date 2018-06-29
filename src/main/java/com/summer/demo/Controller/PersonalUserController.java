@@ -13,17 +13,17 @@ public class PersonalUserController {
     @Autowired
     private PersonalUserRepository userRepo;
 
-    @PostMapping(value = "/personaluser")
+    @PostMapping(value = "/personal_user")
     public Boolean userAdd(@RequestBody PersonalUser user)
     {
         PersonalUser user1=new PersonalUser();
 
         //昵称重复
-        if( userRepo.getNumberOfusername(user.getUsername())>0 )
+        if( userRepo.getNumberOfemail(user.getEmail())>0 )
             return false;
-        else
-        {
+        else{
             user1.setUsername(user.getUsername());
+            user1.setIdNumber(user.getIdNumber());
             try {
                 user1.setPassword(PasswordStorage.createHash(user.getPassword()));
             } catch (PasswordStorage.CannotPerformOperationException e) {
@@ -37,10 +37,10 @@ public class PersonalUserController {
     }
 
     //用户登录函数, 正确返回用户id，错误返回0
-    @GetMapping(value = "/personaluser")
-    public int userExistence(@RequestParam("username") String username, @RequestParam("password") String password)
+    @GetMapping(value = "/personal_user")
+    public int userExistence(@RequestParam("email") String email, @RequestParam("password") String password)
     {
-        PersonalUser user1=userRepo.findByusername(username);
+        PersonalUser user1=userRepo.findByemail(email);
         if( user1!=null)
         {
             try

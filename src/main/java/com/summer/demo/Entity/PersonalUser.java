@@ -18,6 +18,8 @@ public class PersonalUser {
 
     private String email;
 
+    private String Idnumber;
+
     public Integer getUserId() {
         return userId;
     }
@@ -48,5 +50,13 @@ public class PersonalUser {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getIdNumber() {
+        return Idnumber;
+    }
+
+    public void setIdNumber(String Idnumber) {
+        this.Idnumber = Idnumber;
     }
 }

@@ -4,8 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface PersonalUserRepository extends JpaRepository<PersonalUser,Integer> {
-    @Query("select COUNT(u) from PersonalUser u where u.username=?1")
-    public int getNumberOfusername(String username);
+    @Query("select COUNT(u) from PersonalUser u where u.email=?1")
+    public int getNumberOfemail(String email);
+
+    public PersonalUser findByemail(String email);
 
     public PersonalUser findByusername(String username);
 
