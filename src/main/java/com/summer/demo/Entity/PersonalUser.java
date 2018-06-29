@@ -10,7 +10,7 @@ import javax.persistence.Id;
 public class PersonalUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
+    private int userId;
 
     private String username;
 

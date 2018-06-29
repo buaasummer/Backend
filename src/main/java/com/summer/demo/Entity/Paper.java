@@ -2,6 +2,7 @@ package com.summer.demo.Entity;
 
 import javax.persistence.*;
 
+
 @Entity
 public class Paper {
     @Id
@@ -10,16 +11,38 @@ public class Paper {
 
     private String title;
 
+    private String  authorIds;
+
+
+    private String  paperAbstract;
+
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id",foreignKey = @ForeignKey(name = "PERSONALUSER_USER_ID_FK"))
     private PersonalUser personalUser;
 
     @ManyToOne
-    @JoinColumn(name = "meetingId")
+    @JoinColumn(name = "meeting_id",foreignKey = @ForeignKey(name ="MEETING_MEETING_ID_FK"))
     private Meeting meeting;
 
     //论文下载url
     private String downloadUrl;
+
+    public String getPaperAbstract() {
+        return paperAbstract;
+    }
+
+    public void setPaperAbstract(String paperAbstract) {
+        this.paperAbstract = paperAbstract;
+    }
+
+    public String getAuthorIds() {
+
+        return authorIds;
+    }
+
+    public void setAuthorIds(String authorIds) {
+        this.authorIds = authorIds;
+    }
 
     public int getPaperId() {
         return paperId;
