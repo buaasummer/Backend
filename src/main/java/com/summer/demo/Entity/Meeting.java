@@ -5,6 +5,7 @@ import javax.persistence.*;
 
 @Entity
 public class Meeting {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int meetingId;
@@ -28,10 +29,6 @@ public class Meeting {
     //日程安排(待拆分的字段）
     private String schedule;
 
-    @ManyToOne
-    @JoinColumn(name="institution")
-    //组织机构
-    private InstitutionUser institutionUser ;
 
     //论文模板,该字段存的是论文模板的下载url
     private String modelDownloadUrl;
@@ -45,6 +42,9 @@ public class Meeting {
     //邮箱（联系我们）
     private String email;
 
+    @ManyToOne
+    @JoinColumn(name = "institution_id",foreignKey = @ForeignKey(name = "Institution_Institution_ID_FK2"))
+    private Institution institution;
 
     public int getMeetingId() {
         return meetingId;
@@ -140,5 +140,13 @@ public class Meeting {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+   public void setInstitution(Institution institution) {
+       this.institution = institution;
     }
 }

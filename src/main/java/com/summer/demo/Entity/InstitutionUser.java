@@ -1,27 +1,32 @@
 package com.summer.demo.Entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class InstitutionUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
+    private int userId;
 
     private String password;
 
     private String username;
 
-    private String institutionName;
+   @ManyToOne
+   @JoinColumn(name = "institution_id",foreignKey = @ForeignKey(name = "Institution_Institution_ID_FK"))
+   private Institution institution;
 
-    //法人信息（待拆分的属性）
-    private String legalPersonInformation;
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-    //审核材料下载地址
-    private String downloadUrl;
+   public Institution getInstitution() {
+       return institution;
+   }
+
+   public void setInstitution(Institution institution) {
+       this.institution = institution;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -39,35 +44,12 @@ public class InstitutionUser {
         this.password = password;
     }
 
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getInstitutionName() {
-        return institutionName;
-    }
-
-    public void setInstitutionName(String institutionName) {
-        this.institutionName = institutionName;
-    }
-
-    public String getLegalPersonInformation() {
-        return legalPersonInformation;
-    }
-
-    public void setLegalPersonInformation(String legalPersonInformation) {
-        this.legalPersonInformation = legalPersonInformation;
-    }
-
-    public String getDownloadUrl() {
-        return downloadUrl;
-    }
-
-    public void setDownloadUrl(String downloadUrl) {
-        this.downloadUrl = downloadUrl;
     }
 }
