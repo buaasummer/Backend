@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface InstitutionUserRepository extends JpaRepository<InstitutionUser,Integer> {
     @Query("select COUNT(u) from InstitutionUser u where u.username=?1")
     public int getNumberOfUsername(String username);
+
+    public InstitutionUser findByUsername(String username);
 }

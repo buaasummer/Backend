@@ -2,10 +2,7 @@ package com.summer.demo.Controller;
 import com.summer.demo.AssitClass.CostomizedInstitution;
 import com.summer.demo.Security.PasswordStorage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.summer.demo.Entity.InstitutionUser;
 import com.summer.demo.Repository.InstitutionUserRepository;
 import com.summer.demo.Repository.InstitutionRepository;
@@ -56,5 +53,33 @@ public class InstitutionController {
 
             return true;
         }
+    }
+
+    //单位用户登录函数, 正确返回单位id，错误返回0
+    @GetMapping(value = "/institution/login")
+    public int userLogin(@RequestParam("username") String username, @RequestParam("password") String password)
+    {
+        InstitutionUser user1=userRepo.findByUsername(username);
+        if( user1!=null)
+        {
+            try
+            {
+                if( PasswordStorage.verifyPassword(password,user1.getPassword()) )
+                {
+                    return user1.getInstitution().getInstitutionId();
+                }
+            }
+            catch (PasswordStorage.CannotPerformOperationException e)
+            {
+                e.printStackTrace();
+                return 0;
+            }
+            catch (PasswordStorage.InvalidHashException e)
+            {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+        return 0;
     }
 }
