@@ -65,7 +65,7 @@ public class InstitutionController{
             String url=filePath + newFileName;
             //创建文件
             File dest = new File(url);
-            url="/uploads/"+newFileName;
+            url="uploads/"+newFileName;
             newinstitution.setDownloadUrl(url);
             try {
                 file.transferTo(dest);
