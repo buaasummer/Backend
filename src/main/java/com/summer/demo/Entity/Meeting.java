@@ -2,6 +2,8 @@ package com.summer.demo.Entity;
 
 
 import javax.persistence.*;
+import java.sql.Date;
+
 
 @Entity
 public class Meeting {
@@ -14,17 +16,29 @@ public class Meeting {
 
     private String introduction;
 
+    //征稿主题
+
+    //关于我们
+
     //征文信息
     private String solicitingInformation;
+
+    //投稿日期
+    private Date postStartDate;
 
     //截稿日期
     private String submissionDeadline;
 
+    //录用通知日期
+    private String informDate;
+
     //注册截止日期
     private String registrationDeadline;
 
-    //会议日期
-    private String conferenceDate;
+    //会议开始日期
+    private String startDate;
+
+    //会议结束日期endDate
 
     //日程安排(待拆分的字段）
     private String schedule;
@@ -41,6 +55,10 @@ public class Meeting {
 
     //邮箱（联系我们）
     private String email;
+
+    //负责人名称
+
+    //负责人电话
 
     @ManyToOne
     @JoinColumn(name = "institution_id",foreignKey = @ForeignKey(name = "Institution_Institution_ID_FK2"))
@@ -95,11 +113,11 @@ public class Meeting {
     }
 
     public String getConferenceDate() {
-        return conferenceDate;
+        return startDate;
     }
 
     public void setConferenceDate(String conferenceDate) {
-        this.conferenceDate = conferenceDate;
+        this.startDate = conferenceDate;
     }
 
     public String getSchedule() {
@@ -148,5 +166,21 @@ public class Meeting {
 
    public void setInstitution(Institution institution) {
        this.institution = institution;
+    }
+
+    public String getInformDate() {
+        return informDate;
+    }
+
+    public void setInformDate(String informDate) {
+        this.informDate = informDate;
+    }
+
+    public Date getPostStartDate() {
+        return postStartDate;
+    }
+
+    public void setPostStartDate(Date postStartDate) {
+        this.postStartDate = postStartDate;
     }
 }

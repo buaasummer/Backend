@@ -34,25 +34,26 @@ public class InstitutionController{
     private MeetingRepository meetingRepo;
 
     @PostMapping(value = "/institution/register")
-    public boolean userRegister(@RequestParam("file") MultipartFile file, HttpServletRequest request){
+    public int userRegister(@RequestParam("file") MultipartFile file, HttpServletRequest request){
         //相当于新建一个单位用户和一个单位
         InstitutionUser newuser=new InstitutionUser();
         Institution newinstitution = new Institution();
 
+        if(file==null)return 3;//附件上传错误
         //昵称重复
         if(userRepo.getNumberOfUsername(request.getParameter("username"))>0){
-            return false;
+            return 0;//该用户名已存在
         }else{
             //重复的单位
             if(institutionRepo.getNumberOfInstitutionName(request.getParameter("institution"))>0){
-                return false;
+                return 2;//已存在该单位名
             }
             //不正确的信息
             try {
                 newuser.setPassword(PasswordStorage.createHash(request.getParameter("password")));
             } catch (PasswordStorage.CannotPerformOperationException e) {
                 e.printStackTrace();
-                return false;
+                return 100;//后台错误
             }
             newinstitution.setInstitutionName(request.getParameter("institution"));
             newinstitution.setLegalPersonEmail(request.getParameter("email"));
@@ -83,7 +84,7 @@ public class InstitutionController{
             institutionRepo.save(newinstitution);
             userRepo.save(newuser);
 
-            return true;
+            return 1;
         }
     }
 
