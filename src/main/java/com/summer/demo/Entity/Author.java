@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 
 @Entity
-public class author {
+public class Author {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private int authorId;

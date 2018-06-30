@@ -12,8 +12,6 @@ public class Paper {
     private String title;
 
     private String  authorIds;
-
-
     private String  paperAbstract;
 
     @ManyToOne
@@ -24,8 +22,13 @@ public class Paper {
     @JoinColumn(name = "meeting_id",foreignKey = @ForeignKey(name ="MEETING_MEETING_ID_FK"))
     private Meeting meeting;
 
+    //1代表录用，2代表修改后录用，3代表待审核，4代表未录用。
+    private int status;
+
     //论文下载url
     private String downloadUrl;
+
+
 
     public String getPaperAbstract() {
         return paperAbstract;
@@ -82,5 +85,13 @@ public class Paper {
 
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
