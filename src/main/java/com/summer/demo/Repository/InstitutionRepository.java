@@ -9,4 +9,5 @@ public interface InstitutionRepository extends JpaRepository<Institution,Integer
     public int getNumberOfInstitutionName(String institutionName);
 
     public Institution findByInstitutionId(int institutionId);
+    public Institution findByInstitutionName(String institutionName);
 }

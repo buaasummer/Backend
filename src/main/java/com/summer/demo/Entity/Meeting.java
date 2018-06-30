@@ -43,6 +43,8 @@ public class Meeting {
     //日程安排(待拆分的字段）
     private String schedule;
 
+    private String address;
+
 
     //论文模板,该字段存的是论文模板的下载url
     private String modelDownloadUrl;
@@ -216,5 +218,13 @@ public class Meeting {
 
     public void setMeetingId(int meetingId) {
         this.meetingId = meetingId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
