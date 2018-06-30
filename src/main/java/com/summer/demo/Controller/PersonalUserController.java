@@ -64,5 +64,14 @@ public class PersonalUserController {
         return 0;
     }
 
+    @GetMapping(value = "/personal_user/info")
+    public PersonalUser getUserInfo(@RequestParam("uid") int uid){
+        PersonalUser user=userRepo.findByUserId(uid);
+        if(user!=null){
+            return user;
+        }
+        return null;
+    }
+
 
 }
