@@ -9,10 +9,15 @@ import com.summer.demo.Repository.InstitutionRepository;
 import com.summer.demo.Entity.Institution;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
+import com.summer.demo.Entity.Meeting;
+import com.summer.demo.Repository.MeetingRepository;
+
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 import javax.servlet.http.*;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -24,6 +29,9 @@ public class InstitutionController{
 
     @Autowired
     private InstitutionRepository institutionRepo;
+
+    @Autowired
+    private MeetingRepository meetingRepo;
 
     @PostMapping(value = "/institution/register")
     public boolean userRegister(@RequestParam("file") MultipartFile file, HttpServletRequest request){
@@ -112,6 +120,15 @@ public class InstitutionController{
         Institution institution=institutionRepo.findByInstitutionId(institution_id);
         if(institution!=null){
             return institution;
+        }
+        return null;
+    }
+
+    @GetMapping(value="/institution/meetings")
+    public List<Meeting> getAllMeetings(@RequestParam("institution_id") int institution_id){
+        Institution institution=institutionRepo.findByInstitutionId(institution_id);
+        if(institution!=null){
+            return meetingRepo.findAllByInstitution(institution);
         }
         return null;
     }
