@@ -42,7 +42,7 @@ public class InstitutionController{
         if(file==null)return 3;//附件上传错误
         //昵称重复
         if(userRepo.getNumberOfUsername(request.getParameter("username"))>0){
-            return 0;//该用户名已存在
+            return 4;//该用户名已存在
         }else{
             //重复的单位
             if(institutionRepo.getNumberOfInstitutionName(request.getParameter("institution"))>0){
