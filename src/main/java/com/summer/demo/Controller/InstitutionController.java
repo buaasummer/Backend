@@ -22,7 +22,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class InstitutionController{
-    private String filePath="C:\\Users\\Administrator\\Documents\\summer\\uploads\\";
+    private String filePath="C:\\Users\\Administrator\\Documents\\summer\\src\\main\\resources\\resources\\certify_file\\";
 
     @Autowired
     private InstitutionUserRepository userRepo;
@@ -39,14 +39,14 @@ public class InstitutionController{
         InstitutionUser newuser=new InstitutionUser();
         Institution newinstitution = new Institution();
 
-        if(file==null)return 0;//附件上传错误
+        if(file==null)return 3;//附件上传错误
         //昵称重复
         if(userRepo.getNumberOfUsername(request.getParameter("username"))>0){
-            return 0;//该用户名已存在
+            return 4;//该用户名已存在
         }else{
             //重复的单位
             if(institutionRepo.getNumberOfInstitutionName(request.getParameter("institution"))>0){
-                return 0;//已存在该单位名
+                return 2;//已存在该单位名
             }
             //不正确的信息
             try {
@@ -74,7 +74,7 @@ public class InstitutionController{
             String url=filePath + newFileName;
             //创建文件
             File dest = new File(url);
-            url="uploads/"+newFileName;
+            url=newFileName;
             newinstitution.setDownloadUrl(url);
             try {
                 file.transferTo(dest);

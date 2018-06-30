@@ -23,6 +23,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class PaperController {
+    private String filePath="C:\\Users\\Administrator\\Documents\\summer\\src\\main\\resources\\resources\\certify_file\\";
     @Autowired
     PaperRepository paperRepository;
 
@@ -67,7 +68,7 @@ public class PaperController {
         {
             try {
                 byte[] bytes = multipartFile.getBytes();
-                String pathName="upload/paper/"+multipartFile.getOriginalFilename();
+                String pathName=filePath+multipartFile.getOriginalFilename();
                 File saveFile=new File(pathName);
                 stream = new BufferedOutputStream(new FileOutputStream(saveFile));
                 stream.write(bytes);
