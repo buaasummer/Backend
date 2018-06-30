@@ -17,8 +17,11 @@ public class MeetingController {
     //新建会议
     @PostMapping(value = "/meeting/create")
     public int createMeeting(@RequestParam("file") MultipartFile file, HttpServletRequest request){
-        if(file==null)return 3;//附件上传错误
+        if(file==null)return 0;//附件上传错误
+        if(request.getParameter("institution")==null)return 0;//无id
         Meeting meeting = new Meeting();
+
+
 
         return 1;
     }
@@ -32,6 +35,4 @@ public class MeetingController {
             return meetingRepo.findByMeetingId(meeting_id);
         }
     }
-
-
 }

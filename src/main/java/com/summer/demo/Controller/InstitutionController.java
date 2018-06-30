@@ -39,21 +39,21 @@ public class InstitutionController{
         InstitutionUser newuser=new InstitutionUser();
         Institution newinstitution = new Institution();
 
-        if(file==null)return 3;//附件上传错误
+        if(file==null)return 0;//附件上传错误
         //昵称重复
         if(userRepo.getNumberOfUsername(request.getParameter("username"))>0){
-            return 4;//该用户名已存在
+            return 0;//该用户名已存在
         }else{
             //重复的单位
             if(institutionRepo.getNumberOfInstitutionName(request.getParameter("institution"))>0){
-                return 2;//已存在该单位名
+                return 0;//已存在该单位名
             }
             //不正确的信息
             try {
                 newuser.setPassword(PasswordStorage.createHash(request.getParameter("password")));
             } catch (PasswordStorage.CannotPerformOperationException e) {
                 e.printStackTrace();
-                return 100;//后台错误
+                return 0;//后台错误
             }
             newinstitution.setInstitutionName(request.getParameter("institution"));
             newinstitution.setLegalPersonEmail(request.getParameter("email"));
