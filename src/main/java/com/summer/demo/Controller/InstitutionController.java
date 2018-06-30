@@ -74,7 +74,7 @@ public class InstitutionController{
             String url=filePath + newFileName;
             //创建文件
             File dest = new File(url);
-            url=newFileName;
+            url="certify_file"+newFileName;
             newinstitution.setDownloadUrl(url);
             try {
                 file.transferTo(dest);

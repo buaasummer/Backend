@@ -10,7 +10,10 @@ spring:
     show-sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-
+  servlet:
+    multipart:
+      max-file-size: 30Mb
+      max-request-size: 30Mb
 server:
   port: 8081
 
