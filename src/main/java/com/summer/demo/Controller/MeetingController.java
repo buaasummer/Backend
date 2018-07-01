@@ -23,29 +23,49 @@ public class MeetingController {
 
     //新建会议
     @PostMapping(value = "/meeting/create")
-    public int createMeeting(@RequestParam("file") MultipartFile file, HttpServletRequest request){
+    public int createMeeting(HttpServletRequest request){
         //if(file==null)return 0;//附件上传错误
-        if(request.getParameter("institution")==null)return 0;//无id
+        if(request.getParameter("institution_name")==null)return 0;//无id
         Meeting meeting = new Meeting();
         meeting.setTitle(request.getParameter("title"));
         meeting.setIntroduction(request.getParameter("introduction"));
         meeting.setAddress(request.getParameter("address"));
-        java.sql.Date startdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("startdate")).getTime());
-        meeting.setStartDate(startdate);
-        java.sql.Date enddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("enddate")).getTime());
-        meeting.setEndDate(enddate);
+        if(request.getParameter("startdate")!=null){
+            java.sql.Date startdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("startdate")).getTime());
+            meeting.setStartDate(startdate);
+        }
+        if(request.getParameter("enddate")!=null){
+            java.sql.Date enddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("enddate")).getTime());
+            meeting.setEndDate(enddate);
+        }
         meeting.setSchedule(request.getParameter("schedule"));
         meeting.setPaperInfo(request.getParameter("paperinfo"));
-        java.sql.Date poststartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("poststartdate")).getTime());
-        meeting.setPostStartDate(poststartdate);
-        java.sql.Date postenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("postenddate")).getTime());
-        meeting.setPostEndDate(postenddate);
-        java.sql.Date informdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("informdate")).getTime());
-        meeting.setInformDate(informdate);
-        java.sql.Date registstartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registstartdate")).getTime());
-        meeting.setRegistStartDate(registstartdate);
-        java.sql.Date registenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registenddate")).getTime());
-        meeting.setRegistrationDeadline(registenddate);
+
+        if(request.getParameter("poststartdate")!=null){
+            java.sql.Date poststartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("poststartdate")).getTime());
+            meeting.setPostStartDate(poststartdate);
+        }
+
+        if(request.getParameter("postenddate")!=null){
+            java.sql.Date postenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("postenddate")).getTime());
+            meeting.setPostEndDate(postenddate);
+        }
+
+        if(request.getParameter("informdate")!=null){
+            java.sql.Date informdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("informdate")).getTime());
+            meeting.setInformDate(informdate);
+        }
+
+        if(request.getParameter("registstartdate")!=null){
+            java.sql.Date registstartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registstartdate")).getTime());
+            meeting.setRegistStartDate(registstartdate);
+        }
+
+        if(request.getParameter("registenddate")!=null){
+            java.sql.Date registenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registenddate")).getTime());
+            meeting.setRegistrationDeadline(registenddate);
+        }
+
         meeting.setRegistrationFee(request.getParameter("registrationfee"));
         String institution_name=request.getParameter("institution_name");
         Institution institution=institutionRepo.findByInstitutionName(institution_name);
