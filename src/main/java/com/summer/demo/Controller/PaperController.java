@@ -23,7 +23,6 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class PaperController {
-    private String filePath="C:\\Users\\Administrator\\Documents\\summer\\src\\main\\resources\\resources\\certify_file\\";
     @Autowired
     PaperRepository paperRepository;
 
@@ -68,7 +67,7 @@ public class PaperController {
         {
             try {
                 byte[] bytes = multipartFile.getBytes();
-                String pathName=filePath+multipartFile.getOriginalFilename();
+                String pathName="upload/paper"+multipartFile.getOriginalFilename();
                 File saveFile=new File(pathName);
                 stream = new BufferedOutputStream(new FileOutputStream(saveFile));
                 stream.write(bytes);
@@ -85,14 +84,14 @@ public class PaperController {
     }
     @CrossOrigin
     @PostMapping(value = "/paper/author")
-    public Boolean authorSubmit(@RequestParam("paperId") int paperId,List<CustomizedAuthor> customizedAuthorList)
+    public int authorSubmit(@RequestParam("userId") int userId,@RequestParam("meetingId") int meetingId,
+                                List<CustomizedAuthor> customizedAuthorList)
     {
-        Paper paper=paperRepository.getOne(paperId);
-        if(paper==null)
-            return false;
+        PersonalUser user=personalUserRepository.findByUserId(userId);
+        Paper paper=new Paper();
         String authorIds="";
         if(customizedAuthorList==null)
-            return false;
+            return -1;
         for(int i=0;i<customizedAuthorList.size();i++)
         {
             Author author=new Author();
@@ -107,7 +106,7 @@ public class PaperController {
         }
         paper.setAuthorIds(authorIds);
         paperRepository.save(paper);
-        return true;
+        return paper.getPaperId();
     }
 
 }
