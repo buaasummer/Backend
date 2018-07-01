@@ -22,7 +22,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class InstitutionController{
-    private String filePath="C:/upload/certify_file/";
+    private String filePath="upload/certify_file/";
 
     @Autowired
     private InstitutionUserRepository userRepo;
