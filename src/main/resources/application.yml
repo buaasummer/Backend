@@ -15,7 +15,7 @@ spring:
       max-file-size: 30Mb
       max-request-size: 30Mb
   resources:
-    static-locations: file: C:\Users\Administrator\Documents\summer\upload
+    static-locations: file:C:/upload
 server:
   port: 8081
 
