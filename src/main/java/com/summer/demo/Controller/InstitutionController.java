@@ -22,7 +22,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class InstitutionController{
-    private String filePath="C:\\Users\\Administrator\\Documents\\summer\\src\\main\\resources\\resources\\certify_file\\";
+    private String filePath="C:/upload/certify_file/";
 
     @Autowired
     private InstitutionUserRepository userRepo;
@@ -74,7 +74,7 @@ public class InstitutionController{
             String url=filePath + newFileName;
             //创建文件
             File dest = new File(url);
-            url="certify_file"+newFileName;
+            url="certify_file/"+newFileName;
             newinstitution.setDownloadUrl(url);
             try {
                 file.transferTo(dest);
