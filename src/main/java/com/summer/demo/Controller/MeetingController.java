@@ -87,4 +87,16 @@ public class MeetingController {
             return meetingRepo.findByMeetingId(meeting_id);
         }
     }
+
+    //判断会议是否属于该单位用户
+    @GetMapping(value = "/meeting/isMatch")
+    public Boolean isMatch(@RequestParam("meetingId") int meetingId,@RequestParam("institutionId") int institutionId)
+    {
+        Meeting meeting=meetingRepo.findByMeetingId(meetingId);
+        if(institutionId==meeting.getInstitution().getInstitutionId())
+        {
+            return true;
+        }
+        else  return false;
+    }
 }
