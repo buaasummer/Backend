@@ -43,7 +43,7 @@ public class PaperController {
     @Autowired
     AuthorRepository authorRepository;
 
-    String url="http://0686ca8e.ngrok.io/";
+    String url="http://154.8.211.55:8081/";
 
     @GetMapping(value="/paper/display")
     public List<BigPaper> paperDisplay(@RequestParam("meetingId") int meetingId, @RequestParam("userId") int uerId)
