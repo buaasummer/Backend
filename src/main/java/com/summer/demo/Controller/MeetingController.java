@@ -30,38 +30,38 @@ public class MeetingController {
         meeting.setTitle(request.getParameter("title"));
         meeting.setIntroduction(request.getParameter("introduction"));
         meeting.setAddress(request.getParameter("address"));
-        if(request.getParameter("startdate")!=null){
+        if(request.getParameter("startdate")!=null&&request.getParameter("startdate")!=""){
             java.sql.Date startdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("startdate")).getTime());
             meeting.setStartDate(startdate);
         }
-        if(request.getParameter("enddate")!=null){
+        if(request.getParameter("enddate")!=null&&request.getParameter("enddate")!=""){
             java.sql.Date enddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("enddate")).getTime());
             meeting.setEndDate(enddate);
         }
         meeting.setSchedule(request.getParameter("schedule"));
         meeting.setPaperInfo(request.getParameter("paperinfo"));
 
-        if(request.getParameter("poststartdate")!=null){
+        if(request.getParameter("poststartdate")!=null&&request.getParameter("poststartdate")!=""){
             java.sql.Date poststartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("poststartdate")).getTime());
             meeting.setPostStartDate(poststartdate);
         }
 
-        if(request.getParameter("postenddate")!=null){
+        if(request.getParameter("postenddate")!=null&&request.getParameter("postenddate")!=""){
             java.sql.Date postenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("postenddate")).getTime());
             meeting.setPostEndDate(postenddate);
         }
 
-        if(request.getParameter("informdate")!=null){
+        if(request.getParameter("informdate")!=null&&request.getParameter("informdate")!=""){
             java.sql.Date informdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("informdate")).getTime());
             meeting.setInformDate(informdate);
         }
 
-        if(request.getParameter("registstartdate")!=null){
+        if(request.getParameter("registstartdate")!=null&&request.getParameter("registstartdate")!=""){
             java.sql.Date registstartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registstartdate")).getTime());
             meeting.setRegistStartDate(registstartdate);
         }
 
-        if(request.getParameter("registenddate")!=null){
+        if(request.getParameter("registenddate")!=null&&request.getParameter("registenddate")!=""){
             java.sql.Date registenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registenddate")).getTime());
             meeting.setRegistrationDeadline(registenddate);
         }
