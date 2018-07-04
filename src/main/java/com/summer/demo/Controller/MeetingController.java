@@ -28,45 +28,45 @@ public class MeetingController {
 
     //新建会议
     @PostMapping(value = "/meeting/create")
-    public int createMeeting(@RequestParam(value="file", defaultValue = "") MultipartFile file,HttpServletRequest request){
+    public int createMeeting(@RequestParam(value="file") MultipartFile file,HttpServletRequest request){
         //if(file==null)return 0;//附件上传错误
         if(request.getParameter("institution_name")==null)return 0;//无id
         Meeting meeting = new Meeting();
         meeting.setTitle(request.getParameter("title"));
         meeting.setIntroduction(request.getParameter("introduction"));
         meeting.setAddress(request.getParameter("address"));
-        if(request.getParameter("startdate")!=null&&request.getParameter("startdate")!=""){
+        if(request.getParameter("startdate")!=null&&request.getParameter("startdate")!=""&& !request.getParameter("startdate").equals("")){
             java.sql.Date startdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("startdate")).getTime());
             meeting.setStartDate(startdate);
         }
-        if(request.getParameter("enddate")!=null&&request.getParameter("enddate")!=""){
+        if(request.getParameter("enddate")!=null&&request.getParameter("enddate")!=""&& !request.getParameter("enddate").equals("")){
             java.sql.Date enddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("enddate")).getTime());
             meeting.setEndDate(enddate);
         }
         meeting.setSchedule(request.getParameter("schedule"));
         meeting.setPaperInfo(request.getParameter("paperinfo"));
 
-        if(request.getParameter("poststartdate")!=null&&request.getParameter("poststartdate")!=""){
+        if(request.getParameter("poststartdate")!=null&&request.getParameter("poststartdate")!=""&& !request.getParameter("poststartdate").equals("")){
             java.sql.Date poststartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("poststartdate")).getTime());
             meeting.setPostStartDate(poststartdate);
         }
 
-        if(request.getParameter("postenddate")!=null&&request.getParameter("postenddate")!=""){
+        if(request.getParameter("postenddate")!=null&&request.getParameter("postenddate")!=""&& !request.getParameter("postenddate").equals("")){
             java.sql.Date postenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("postenddate")).getTime());
             meeting.setPostEndDate(postenddate);
         }
 
-        if(request.getParameter("informdate")!=null&&request.getParameter("informdate")!=""){
+        if(request.getParameter("informdate")!=null&&request.getParameter("informdate")!=""&& !request.getParameter("informdate").equals("")){
             java.sql.Date informdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("informdate")).getTime());
             meeting.setInformDate(informdate);
         }
 
-        if(request.getParameter("registstartdate")!=null&&request.getParameter("registstartdate")!=""){
+        if(request.getParameter("registstartdate")!=null&&request.getParameter("registstartdate")!=""&& !request.getParameter("registstartdate").equals("")){
             java.sql.Date registstartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registstartdate")).getTime());
             meeting.setRegistStartDate(registstartdate);
         }
 
-        if(request.getParameter("registenddate")!=null&&request.getParameter("registenddate")!=""){
+        if(request.getParameter("registenddate")!=null&&request.getParameter("registenddate")!=""&& !request.getParameter("registenddate").equals("")){
             java.sql.Date registenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registenddate")).getTime());
             meeting.setRegistrationDeadline(registenddate);
         }
