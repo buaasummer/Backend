@@ -8,13 +8,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.summer.demo.StaticClass.DateParser;
 import com.summer.demo.Entity.Institution;
 import com.summer.demo.Repository.InstitutionRepository;
+
+import java.io.File;
+import java.io.IOException;
 import java.sql.Date;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 @CrossOrigin
 @RestController
 public class MeetingController {
+    private String filePath="C:\\Users\\Administrator\\Documents\\release1\\upload\\paper_model\\";
     @Autowired
     private MeetingRepository meetingRepo;
 
@@ -23,8 +28,8 @@ public class MeetingController {
 
     //新建会议
     @PostMapping(value = "/meeting/create")
-    public int createMeeting(HttpServletRequest request){
-        //if(file==null)return 0;//附件上传错误
+    public int createMeeting(@RequestParam("file") MultipartFile file,HttpServletRequest request){
+        if(file==null)return 0;//附件上传错误
         if(request.getParameter("institution_name")==null)return 0;//无id
         Meeting meeting = new Meeting();
         meeting.setTitle(request.getParameter("title"));
@@ -74,6 +79,24 @@ public class MeetingController {
         meeting.setEmail(request.getParameter("email"));
         meeting.setPhone(request.getParameter("phone"));
         meeting.setAccommodationAndTraffic(request.getParameter("traffic"));
+
+        String fileName = file.getOriginalFilename();
+        // 文件后缀
+        //String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        // 重新生成唯一文件名，用于存储数据库
+        //String newFileName = UUID.randomUUID().toString()+suffixName;
+
+        String url=filePath + fileName;
+        //创建文件
+        File dest = new File(url);
+        url="154.8.211.55:8081/paper_model/"+fileName;
+        //newinstitution.setDownloadUrl(url);
+        meeting.setModelDownloadUrl(url);
+        try {
+            file.transferTo(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         meetingRepo.save(meeting);
         return meeting.getMeetingId();
     }
