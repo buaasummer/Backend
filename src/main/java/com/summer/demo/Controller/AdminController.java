@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.summer.demo.Entity.Institution;
+import com.summer.demo.Repository.InstitutionRepository;
+import com.summer.demo.Entity.InstitutionUser;
+import com.summer.demo.Repository.InstitutionUserRepository;
 import java.util.List;
 
 @CrossOrigin
@@ -23,6 +27,12 @@ public class AdminController {
 
     @Autowired
     private ApplicationRepository applyRepo;
+
+    @Autowired
+    private InstitutionRepository institutionRepo;
+
+    @Autowired
+    private InstitutionUserRepository userRepo;
 
     @GetMapping(value = "/admin/login")
     public int adminLogin(@RequestParam("username") String username, @RequestParam("password") String password){
@@ -68,6 +78,25 @@ public class AdminController {
     @GetMapping(value = "/admin/apply")
     public List<Application> getAllApply(){
         return applyRepo.findAll();
+    }
+
+    @GetMapping(value = "admin/get_all_institution")
+    public List<Institution> getAllInstitution(){
+        return institutionRepo.findAll();
+    }
+
+    @GetMapping(value = "admin/check_apply")
+    public Boolean checkApply(@RequestParam("apply_id") int applyId, @RequestParam("result") int res){
+        if(applyId==0)return false;
+        Application apply=applyRepo.findByApplicationId(applyId);
+        if(res==0){
+            userRepo.delete(apply.getInstitutionuser());
+            institutionRepo.delete(apply.getInstitution());
+        }else{
+
+        }
+        applyRepo.deleteById(applyId);
+        return true;
     }
 
 }

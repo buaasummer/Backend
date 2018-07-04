@@ -79,7 +79,7 @@ public class MeetingController {
         meeting.setEmail(request.getParameter("email"));
         meeting.setPhone(request.getParameter("phone"));
         meeting.setAccommodationAndTraffic(request.getParameter("traffic"));
-        
+
         String fileName = file.getOriginalFilename();
         // 文件后缀
         //String suffixName = fileName.substring(fileName.lastIndexOf("."));

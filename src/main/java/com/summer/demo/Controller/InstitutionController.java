@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import com.summer.demo.Entity.Meeting;
 import com.summer.demo.Repository.MeetingRepository;
+import com.summer.demo.Repository.ApplicationRepository;
+import com.summer.demo.Entity.Application;
 
 import java.awt.*;
 import java.io.File;
@@ -34,12 +36,15 @@ public class InstitutionController{
     @Autowired
     private MeetingRepository meetingRepo;
 
+    @Autowired
+    private ApplicationRepository applyRepo;
+
     @PostMapping(value = "/institution/register")
     public int userRegister(@RequestParam("file") MultipartFile file, HttpServletRequest request){
         //相当于新建一个单位用户和一个单位
         InstitutionUser newuser=new InstitutionUser();
         Institution newinstitution = new Institution();
-
+        Application apply = new Application();
         if(file==null)return 3;//附件上传错误
         //昵称重复
         if(userRepo.getNumberOfUsername(request.getParameter("username"))>0){
@@ -82,7 +87,10 @@ public class InstitutionController{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            apply.setInstitution(newinstitution);
+            apply.setTime(new java.util.Date().toString());
             institutionRepo.save(newinstitution);
+            applyRepo.save(apply);
             userRepo.save(newuser);
 
             return 1;
@@ -96,6 +104,7 @@ public class InstitutionController{
         InstitutionUser user1=userRepo.findByUsername(username);
         if( user1!=null)
         {
+            if(applyRepo.findByInstitution(user1.getInstitution())!=null)return 0;
             try
             {
                 if( PasswordStorage.verifyPassword(password,user1.getPassword()) )

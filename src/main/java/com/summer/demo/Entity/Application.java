@@ -14,6 +14,10 @@ public class Application {
     @JoinColumn(name = "institution_id", foreignKey = @ForeignKey(name = "Application_Institution_ID_FK2"))
     private Institution institution;
 
+    @OneToOne
+    @JoinColumn(name = "userId", foreignKey = @ForeignKey(name = "Application_InstitutionUser_ID_FK2"))
+    private InstitutionUser institutionuser;
+
     public int getApplicationId() {
         return applicationId;
     }
@@ -36,5 +40,13 @@ public class Application {
 
     public void setInstitution(Institution institution) {
         this.institution = institution;
+    }
+
+    public InstitutionUser getInstitutionuser() {
+        return institutionuser;
+    }
+
+    public void setInstitutionuser(InstitutionUser institutionuser) {
+        this.institutionuser = institutionuser;
     }
 }
