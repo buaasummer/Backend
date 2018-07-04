@@ -227,4 +227,15 @@ public class Meeting {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public boolean isHeldIn(java.util.Date startd, java.util.Date endd){
+        java.util.Date tempstartdate = new java.util.Date(this.getStartDate().getTime());
+        java.util.Date tempenddate = new java.util.Date(this.getEndDate().getTime());
+        if(tempstartdate.before(startd)){
+            if(tempenddate.after(endd)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
