@@ -1,5 +1,6 @@
 package com.summer.demo.Controller;
 import com.summer.demo.AssitClass.CostomizedInstitution;
+import com.summer.demo.AssitClass.CustomizedUser;
 import com.summer.demo.Security.PasswordStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -135,16 +136,24 @@ public class InstitutionController{
     }
 
     @PostMapping(value = "/institution/addUser")
-    public Boolean addUser(@RequestParam("institutionId") int institutionId,HttpServletRequest request)
+    public int addUser(@RequestParam("institutionId") int institutionId,@RequestBody CustomizedUser customizedUser)
     {
         Institution institution=institutionRepo.findByInstitutionId(institutionId);
-        if(institution==null) return false;
         InstitutionUser institutionUser=new InstitutionUser();
         institutionUser.setInstitution(institution);
-        institutionUser.setUsername(request.getParameter("userName"));
-        institutionUser.setPassword(request.getParameter("password"));
-        userRepo.save(institutionUser);
-        return true;
+        if(userRepo.getNumberOfUsername(customizedUser.getUserName())>0) {
+            return 2;//该用户名已存在
+        }else {
+            institutionUser.setUsername(customizedUser.getUserName());
+            try {
+                institutionUser.setPassword(PasswordStorage.createHash(customizedUser.getPassword()));
+            } catch (PasswordStorage.CannotPerformOperationException e) {
+                e.printStackTrace();
+                return 0;//后台错误
+            }
+        }
+            userRepo.save(institutionUser);
+            return 1;
     }
 
 }
