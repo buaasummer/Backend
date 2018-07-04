@@ -110,10 +110,12 @@ public class PaperController {
             return -1;
         for(int i=0;i<customizedAuthorList.length;i++)
         {
-            Author author=new Author();
             JSONObject jsonObject=JSONObject.fromObject(customizedAuthorList[i]);
+            String email=jsonObject.getString("email");
+            Author author=authorRepository.findByEmail(email);
+            if(author==null) author=new Author();
             author.setAuthorName(jsonObject.getString("authorName"));
-            author.setIdentificationNumber(jsonObject.getInt("identificationNumber"));
+            author.setEmail(email);
             author.setOrganization(jsonObject.getString("organization"));
             authorRepository.save(author);
             if(i!=customizedAuthorList.length-1)
@@ -145,12 +147,11 @@ public class PaperController {
         for(int i=0;i<customizedAuthorList.length;i++)
         {
             JSONObject jsonObject=JSONObject.fromObject(customizedAuthorList[i]);
-            String identificationNumber=jsonObject.getString("identification");
-            int number=Integer.parseInt(identificationNumber);
-            Author author=authorRepository.findByIdentificationNumber(number);
+            String email=jsonObject.getString("email");
+            Author author=authorRepository.findByEmail(email);
             if(author==null) author=new Author();
             author.setAuthorName(jsonObject.getString("authorName"));
-            author.setIdentificationNumber(jsonObject.getInt("identificationNumber"));
+            author.setEmail(jsonObject.getString("email"));
             author.setOrganization(jsonObject.getString("organization"));
             authorRepository.save(author);
             if(i!=customizedAuthorList.length-1)
@@ -199,5 +200,12 @@ public class PaperController {
             bigPapers.add(bigPaper);
         }
         return bigPapers;
+    }
+    @PostMapping(value = "/paper/review")
+    public void reviewPaper(@RequestParam("paperId")int paperId,@RequestParam("status") int status)
+    {
+        Paper paper=paperRepository.getOne(paperId);
+        paper.setStatus(status);
+        paperRepository.save(paper);
     }
 }

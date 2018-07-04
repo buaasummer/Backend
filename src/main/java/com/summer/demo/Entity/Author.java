@@ -14,7 +14,7 @@ public class Author {
 
     private String authorName;
 
-    private int identificationNumber;
+    private String email;
 
     private String organization;
 
@@ -34,12 +34,12 @@ public class Author {
         this.authorName = authorName;
     }
 
-    public int getIdentificationNumber() {
-        return identificationNumber;
+    public String getEmail() {
+        return email;
     }
 
-    public void setIdentificationNumber(int identificationNumber) {
-        this.identificationNumber = identificationNumber;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getOrganization() {
