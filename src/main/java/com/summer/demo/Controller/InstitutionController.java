@@ -133,4 +133,18 @@ public class InstitutionController{
         }
         return null;
     }
+
+    @PostMapping(value = "/institution/addUser")
+    public Boolean addUser(@RequestParam("institutionId") int institutionId,HttpServletRequest request)
+    {
+        Institution institution=institutionRepo.findByInstitutionId(institutionId);
+        if(institution==null) return false;
+        InstitutionUser institutionUser=new InstitutionUser();
+        institutionUser.setInstitution(institution);
+        institutionUser.setUsername(request.getParameter("userName"));
+        institutionUser.setPassword(request.getParameter("password"));
+        userRepo.save(institutionUser);
+        return true;
+    }
+
 }

@@ -4,6 +4,7 @@ package com.summer.demo.Controller;
 import com.summer.demo.AssitClass.BigPaper;
 import com.summer.demo.AssitClass.CustomizedAuthor;
 import com.summer.demo.AssitClass.CustomizedPaper;
+import com.summer.demo.AssitClass.ExpandPaper;
 import com.summer.demo.Entity.Author;
 import com.summer.demo.Entity.Meeting;
 import com.summer.demo.Entity.Paper;
@@ -128,11 +129,23 @@ public class PaperController {
         return paper.getPaperId();
     }
     @GetMapping(value = "/paper/{meetingId}")
-    public List<BigPaper> meetingPaperDisplay(@PathVariable("meetingId") int meetingId)
+    public List<ExpandPaper> meetingPaperDisplay(@PathVariable("meetingId") int meetingId)
     {
             Meeting meeting=meetingRepository.findByMeetingId(meetingId);
             List<Paper> paperList=paperRepository.findPapersByMeeting(meeting);
-            return displayPaper(paperList);
+            List<BigPaper> bigPapers=displayPaper(paperList);
+            List<ExpandPaper> expandPapers=new ArrayList<>();
+            for(int i=0;i<bigPapers.size();i++)
+            {
+                ExpandPaper expandPaper=new ExpandPaper(bigPapers.get(i));
+                int paperId=bigPapers.get(i).getPaperId();
+                Paper paper=paperRepository.getOne(paperId);
+                PersonalUser personalUser=paper.getPersonalUser();
+                String email=personalUser.getEmail();
+                expandPaper.setEmail(email);
+                expandPapers.add(expandPaper);
+            }
+            return expandPapers;
     }
     @PostMapping(value = "/paper/author/update")
     public Boolean authorUpdate(@RequestParam("paperId") int paperId,@RequestParam("customizedAuthorList") String str)
