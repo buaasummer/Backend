@@ -12,20 +12,20 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
     public Page<Meeting> findMeetingsByTitleContaining(String title, Pageable pageable);
 
     @Query(value = "select * from meeting m where m.title like ?1 " +
-            "and (m.startdate between ?2 and ?3) " +
-            "and (m.enddate between ?2 and ?3) " +
-            "and ?4 between m.poststartdate and m.postenddate", nativeQuery = true)
+            "and (m.start_date between ?2 and ?3) " +
+            "and (m.end_date between ?2 and ?3) " +
+            "and ?4 between m.post_start_date and m.post_end_date", nativeQuery = true)
     public Page<Meeting> findAllByGivenPost(String title, Date startdate, Date enddate, Date curdate, Pageable pageable);
 
     @Query(value = "select * from meeting m where m.title like ?1 " +
-            "and (m.startdate between ?2 and ?3) " +
-            "and (m.enddate between ?2 and ?3) " +
-            "and ?4 between m.registstartdate and m.registrationdeadline", nativeQuery = true)
+            "and (m.start_date between ?2 and ?3) " +
+            "and (m.end_date between ?2 and ?3) " +
+            "and ?4 between m.regist_start_date and m.registration_deadline", nativeQuery = true)
     public Page<Meeting> findAllByGivenRegist(String title, Date startdate, Date enddate, Date curdate, Pageable pageable);
 
     @Query(value = "select * from meeting m where m.title like ?1 " +
-            "and (m.startdate between ?2 and ?3) " +
-            "and (m.enddate between ?2 and ?3) ", nativeQuery = true)
+            "and (m.start_date between ?2 and ?3) " +
+            "and (m.end_date between ?2 and ?3) ", nativeQuery = true)
     public Page<Meeting> findAllByGivenNone(String title, Date startdate, Date enddate, Pageable pageable);
     public List<Meeting> findAllByInstitution(Institution institution);
     public Meeting findByMeetingId(int meetingId);
