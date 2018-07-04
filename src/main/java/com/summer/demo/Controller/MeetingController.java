@@ -28,8 +28,8 @@ public class MeetingController {
 
     //新建会议
     @PostMapping(value = "/meeting/create")
-    public int createMeeting(@RequestParam("file") MultipartFile file,HttpServletRequest request){
-        if(file==null)return 0;//附件上传错误
+    public int createMeeting(@RequestParam(value="file", defaultValue = "") MultipartFile file,HttpServletRequest request){
+        //if(file==null)return 0;//附件上传错误
         if(request.getParameter("institution_name")==null)return 0;//无id
         Meeting meeting = new Meeting();
         meeting.setTitle(request.getParameter("title"));
@@ -79,7 +79,7 @@ public class MeetingController {
         meeting.setEmail(request.getParameter("email"));
         meeting.setPhone(request.getParameter("phone"));
         meeting.setAccommodationAndTraffic(request.getParameter("traffic"));
-
+        
         String fileName = file.getOriginalFilename();
         // 文件后缀
         //String suffixName = fileName.substring(fileName.lastIndexOf("."));
@@ -97,6 +97,7 @@ public class MeetingController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         meetingRepo.save(meeting);
         return meeting.getMeetingId();
     }
