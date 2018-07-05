@@ -17,6 +17,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.dc.path.PathError;
@@ -44,6 +46,9 @@ public class PaperController {
     @Autowired
     AuthorRepository authorRepository;
 
+    @Autowired
+    JavaMailSender jms;
+
     String url="http://154.8.211.55:8081/";
 
     @GetMapping(value="/paper/display")
@@ -63,36 +68,23 @@ public class PaperController {
     public Boolean paperSubmit(@RequestParam("paperId") int paperId,
                             CustomizedPaper customizedPaper)
     {
-        Paper paper=paperRepository.getOne(paperId);
-        String title=customizedPaper.getTitle();
-        MultipartFile multipartFile=customizedPaper.getMultipartFile();
-        String paperAbstract=customizedPaper.getPaperAbstract();
-        paper.setTitle(title);
-        paper.setPaperAbstract(paperAbstract);
-        BufferedOutputStream stream;
-        String downloadUrl="";
-        if(!multipartFile.isEmpty())
-        {
-            try {
-                byte[] bytes = multipartFile.getBytes();
-                String pathName="upload/papers/"+multipartFile.getOriginalFilename();
-                downloadUrl=url+"papers/"+multipartFile.getOriginalFilename();
-                File saveFile=new File(pathName);
-                stream = new BufferedOutputStream(new FileOutputStream(saveFile));
-                stream.write(bytes);
-                stream.flush();
-                stream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false ;//提交论文失败
-            }
-        }
-        paper.setDownloadUrl(downloadUrl);
-        paper.setStatus(3);
-        paperRepository.save(paper);
-        System.out.println(paper.getPaperId());
-        return true;
+        return updatePaper(paperId,customizedPaper);
     }
+
+    @PostMapping(value="/paper/update")
+    public Boolean paperUpdate(@RequestParam("paperId") int paperId,CustomizedPaper customizedPaper)
+    {
+        Boolean flag=updatePaper(paperId,customizedPaper);
+        if(flag)
+        {
+            Paper paper=paperRepository.getOne(paperId);
+            paper.setStatus(6);
+            return true;
+        }
+        else
+            return false;
+    }
+
     @CrossOrigin
     @PostMapping(value = "/paper/author")
     public int authorSubmit(@RequestParam("userId") int userId, @RequestParam("meetingId") int meetingId,
@@ -147,35 +139,7 @@ public class PaperController {
             }
             return expandPapers;
     }
-    @PostMapping(value = "/paper/author/update")
-    public Boolean authorUpdate(@RequestParam("paperId") int paperId,@RequestParam("customizedAuthorList") String str)
-    {
-        JSONArray jsonArray=JSONArray.fromObject(str);
-        Object[] customizedAuthorList=jsonArray.toArray();
-        Paper paper=paperRepository.getOne(paperId);
-        String authorIds="";
-        System.out.println(customizedAuthorList.length);
-        if(customizedAuthorList==null)
-            return false;
-        for(int i=0;i<customizedAuthorList.length;i++)
-        {
-            JSONObject jsonObject=JSONObject.fromObject(customizedAuthorList[i]);
-            String email=jsonObject.getString("email");
-            Author author=authorRepository.findByEmail(email);
-            if(author==null) author=new Author();
-            author.setAuthorName(jsonObject.getString("authorName"));
-            author.setEmail(jsonObject.getString("email"));
-            author.setOrganization(jsonObject.getString("organization"));
-            authorRepository.save(author);
-            if(i!=customizedAuthorList.length-1)
-                authorIds+=author.getAuthorId()+",";
-            else
-                authorIds+=author.getAuthorId()+"";
-        }
-        paper.setAuthorIds(authorIds);
-        paperRepository.save(paper);
-        return true;
-    }
+
 
     public List<BigPaper> displayPaper(List<Paper> paperList)
     {
@@ -215,10 +179,65 @@ public class PaperController {
         return bigPapers;
     }
     @PostMapping(value = "/paper/review")
-    public void reviewPaper(@RequestParam("paperId")int paperId,@RequestParam("status") int status)
+    public void reviewPaper(@RequestParam("paperId")int paperId,@RequestParam("status") int status,
+                            HttpServletRequest request)
     {
         Paper paper=paperRepository.getOne(paperId);
-        paper.setStatus(status);
+        int beforeStatus=paper.getStatus();
+        if(beforeStatus==6&&status==1)
+            paper.setStatus(2);
+        else
+            paper.setStatus(status);
+        PersonalUser personalUser=paper.getPersonalUser();
+        Meeting meeting=paper.getMeeting();
+        String acceptSubject="恭喜您，尊敬的 "+personalUser.getUsername()+"学者您的论文投稿已经被"
+                +meeting.getTitle()+"录用";
+        String refuseSubject="很抱歉，尊敬的 "+personalUser.getUsername()+"学者您的论文投稿未被"
+                +meeting.getTitle()+"录用";
+        String modifySubject="尊敬的 "+personalUser.getUsername()+"学者您在会议"
+                +meeting.getTitle()+"论文投稿需要修改才能被录用";
+        SimpleMailMessage message=new SimpleMailMessage();
+        message.setFrom("m13121210685@163.com");
+        message.setTo(personalUserRepository.findByUserId(paper.getPersonalUser().getUserId()).getEmail());
+        if(status==1)
+        message.setSubject(acceptSubject);
+        else if(status==5)
+            message.setSubject(modifySubject);
+        else if(status==4)
+            message.setSubject(refuseSubject);
+        message.setText(request.getParameter("mes"));
+        jms.send(message);
         paperRepository.save(paper);
+    }
+    public Boolean updatePaper(int paperId,CustomizedPaper customizedPaper)
+    {
+        Paper paper=paperRepository.getOne(paperId);
+        String title=customizedPaper.getTitle();
+        MultipartFile multipartFile=customizedPaper.getMultipartFile();
+        String paperAbstract=customizedPaper.getPaperAbstract();
+        paper.setTitle(title);
+        paper.setPaperAbstract(paperAbstract);
+        BufferedOutputStream stream;
+        String downloadUrl="";
+        if(!multipartFile.isEmpty())
+        {
+            try {
+                byte[] bytes = multipartFile.getBytes();
+                String pathName="upload/papers/"+multipartFile.getOriginalFilename();
+                downloadUrl=url+"papers/"+multipartFile.getOriginalFilename();
+                File saveFile=new File(pathName);
+                stream = new BufferedOutputStream(new FileOutputStream(saveFile));
+                stream.write(bytes);
+                stream.flush();
+                stream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false ;//提交论文失败
+            }
+        }
+        paper.setDownloadUrl(downloadUrl);
+        paper.setStatus(3);
+        paperRepository.save(paper);
+        return true;
     }
 }

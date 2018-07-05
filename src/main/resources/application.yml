@@ -16,6 +16,13 @@ spring:
       max-request-size: 30Mb
   resources:
     static-locations: file:C:\Users\Administrator\Documents\backend\upload
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com
+    protocol: smtp
+    username: m13121210685@163.com
+    password: sz654321
 server:
   port: 8081
+
 
