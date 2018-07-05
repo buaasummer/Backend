@@ -33,7 +33,7 @@ public class SearchController {
                                            @RequestParam(value = "startdate", defaultValue = "1000-01-01") String startDate,
                                            @RequestParam(value = "enddate", defaultValue = "9000-01-01") String endDate,
                                            @RequestParam(value = "isonposting", defaultValue = "0") int isOnPosting,
-                                           @RequestParam(value = "isonregistration", defaultValue = "0") int isOnRegistration){
+                                           @RequestParam(value = "isonregist", defaultValue = "0") int isOnRegistration){
         List<Meeting> meetingList=new ArrayList<>();
         Pageable pageable=new PageRequest(page,size, Sort.Direction.ASC,"meeting_id");
         keyword="%"+keyword+"%";
@@ -43,14 +43,16 @@ public class SearchController {
         java.util.Date currentDate=new java.util.Date();
         java.sql.Date curdate=new java.sql.Date(DateParser.stringToDate(format1.format(currentDate)).getTime());
         System.out .println(curdate.toString());
+        if(isOnPosting==1&&isOnRegistration==1)return null;
         if(isOnPosting==1){
             meetingList=meetingRepo.findAllByGivenPost(keyword,startdate,enddate,curdate,pageable).getContent();
-        }else if(isOnRegistration==1){
-            meetingList=meetingRepo.findAllByGivenRegist(keyword,startdate,enddate,curdate,pageable).getContent();
-        }else{
-            meetingList=meetingRepo.findAllByGivenNone(keyword,startdate,enddate,pageable).getContent();
+            return meetingList;
         }
-
+        if(isOnRegistration==1){
+            meetingList=meetingRepo.findAllByGivenRegist(keyword,startdate,enddate,curdate,pageable).getContent();
+            return meetingList;
+        }
+        meetingList=meetingRepo.findAllByGivenNone(keyword,startdate,enddate,pageable).getContent();
         return meetingList;
     }
 }
