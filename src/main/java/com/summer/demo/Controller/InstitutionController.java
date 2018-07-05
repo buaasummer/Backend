@@ -3,6 +3,8 @@ import com.summer.demo.AssitClass.CostomizedInstitution;
 import com.summer.demo.AssitClass.CustomizedUser;
 import com.summer.demo.Security.PasswordStorage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import com.summer.demo.Entity.InstitutionUser;
 import com.summer.demo.Repository.InstitutionUserRepository;
@@ -14,10 +16,12 @@ import com.summer.demo.Entity.Meeting;
 import com.summer.demo.Repository.MeetingRepository;
 import com.summer.demo.Repository.ApplicationRepository;
 import com.summer.demo.Entity.Application;
+import org.springframework.data.domain.Pageable;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 import javax.servlet.http.*;
 import java.util.List;
@@ -136,10 +140,13 @@ public class InstitutionController{
     }
 
     @GetMapping(value="/institution/meetings")
-    public List<Meeting> getAllMeetings(@RequestParam("institution_id") int institution_id){
+    public List<Meeting> getAllMeetings(@RequestParam("institution_id") int institution_id, @RequestParam("page") int page, @RequestParam("size") int size){
         Institution institution=institutionRepo.findByInstitutionId(institution_id);
         if(institution!=null){
-            return meetingRepo.findAllByInstitution(institution);
+            Pageable pageable=new PageRequest(page,size, Sort.Direction.ASC,"meetingId");
+            List<Meeting> meetingList=new ArrayList<>();
+            meetingList=meetingRepo.findAllByInstitution(institution, pageable).getContent();
+            return meetingList;
         }
         return null;
     }

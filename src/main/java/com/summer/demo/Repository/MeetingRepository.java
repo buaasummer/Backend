@@ -27,6 +27,8 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
             "and (m.start_date between ?2 and ?3) " +
             "and (m.end_date between ?2 and ?3) ", nativeQuery = true)
     public Page<Meeting> findAllByGivenNone(String title, Date startdate, Date enddate, Pageable pageable);
-    public List<Meeting> findAllByInstitution(Institution institution);
+
+    public Page<Meeting> findAllByInstitution(Institution institution, Pageable pageable);
+
     public Meeting findByMeetingId(int meetingId);
 }
