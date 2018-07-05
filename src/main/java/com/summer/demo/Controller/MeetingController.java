@@ -11,6 +11,8 @@ import com.summer.demo.Repository.InstitutionRepository;
 import com.summer.demo.Entity.PersonalUser;
 import com.summer.demo.Repository.PersonalUserRepository;
 
+import com.summer.demo.AssitClass.AssitMeeting;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
@@ -33,75 +35,78 @@ public class MeetingController {
 
     //新建会议
     @PostMapping(value = "/meeting/create")
-    public int createMeeting(@RequestParam(value="file") MultipartFile file,HttpServletRequest request){
+    public int createMeeting(AssitMeeting assitMeeting){
         //if(file==null)return 0;//附件上传错误
-        if(request.getParameter("institution_name")==null)return 0;//无id
+        if(assitMeeting.getInstitution_name().equals("")||assitMeeting.getInstitution_name().isEmpty())return 0;//无id
         Meeting meeting = new Meeting();
-        meeting.setTitle(request.getParameter("title"));
-        meeting.setIntroduction(request.getParameter("introduction"));
-        meeting.setAddress(request.getParameter("address"));
-        if(request.getParameter("startdate")!=null&&request.getParameter("startdate")!=""&& !request.getParameter("startdate").equals("")){
-            java.sql.Date startdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("startdate")).getTime());
+        meeting.setTitle(assitMeeting.getTitle());
+        meeting.setIntroduction(assitMeeting.getIntroduction());
+        meeting.setAddress(assitMeeting.getAddress());
+        if(!assitMeeting.getStartdate().equals("")&&!assitMeeting.getStartdate().isEmpty()){
+            java.sql.Date startdate=new java.sql.Date(DateParser.stringToDate(assitMeeting.getStartdate()).getTime());
             meeting.setStartDate(startdate);
         }
-        if(request.getParameter("enddate")!=null&&request.getParameter("enddate")!=""&& !request.getParameter("enddate").equals("")){
-            java.sql.Date enddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("enddate")).getTime());
+        if(!assitMeeting.getEnddate().equals("")&&!assitMeeting.getEnddate().isEmpty()){
+            java.sql.Date enddate=new java.sql.Date(DateParser.stringToDate(assitMeeting.getEnddate()).getTime());
             meeting.setEndDate(enddate);
         }
-        meeting.setSchedule(request.getParameter("schedule"));
-        meeting.setPaperInfo(request.getParameter("paperinfo"));
+        meeting.setSchedule(assitMeeting.getSchedule());
+        meeting.setPaperInfo(assitMeeting.getPaperinfo());
 
-        if(request.getParameter("poststartdate")!=null&&request.getParameter("poststartdate")!=""&& !request.getParameter("poststartdate").equals("")){
-            java.sql.Date poststartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("poststartdate")).getTime());
+        if(!assitMeeting.getPoststartdate().equals("")&&!assitMeeting.getPoststartdate().isEmpty()){
+            java.sql.Date poststartdate=new java.sql.Date(DateParser.stringToDate(assitMeeting.getPoststartdate()).getTime());
             meeting.setPostStartDate(poststartdate);
         }
 
-        if(request.getParameter("postenddate")!=null&&request.getParameter("postenddate")!=""&& !request.getParameter("postenddate").equals("")){
-            java.sql.Date postenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("postenddate")).getTime());
+        if(!assitMeeting.getPostenddate().equals("")&&!assitMeeting.getPostenddate().isEmpty()){
+            java.sql.Date postenddate=new java.sql.Date(DateParser.stringToDate(assitMeeting.getPostenddate()).getTime());
             meeting.setPostEndDate(postenddate);
         }
 
-        if(request.getParameter("informdate")!=null&&request.getParameter("informdate")!=""&& !request.getParameter("informdate").equals("")){
-            java.sql.Date informdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("informdate")).getTime());
+        if(!assitMeeting.getInformdate().equals("")&&!assitMeeting.getInformdate().isEmpty()){
+            java.sql.Date informdate=new java.sql.Date(DateParser.stringToDate(assitMeeting.getInformdate()).getTime());
             meeting.setInformDate(informdate);
         }
 
-        if(request.getParameter("registstartdate")!=null&&request.getParameter("registstartdate")!=""&& !request.getParameter("registstartdate").equals("")){
-            java.sql.Date registstartdate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registstartdate")).getTime());
+        if(!assitMeeting.getRegiststartdate().equals("")&&!assitMeeting.getRegiststartdate().isEmpty()){
+            java.sql.Date registstartdate=new java.sql.Date(DateParser.stringToDate(assitMeeting.getRegiststartdate()).getTime());
             meeting.setRegistStartDate(registstartdate);
         }
 
-        if(request.getParameter("registenddate")!=null&&request.getParameter("registenddate")!=""&& !request.getParameter("registenddate").equals("")){
-            java.sql.Date registenddate=new java.sql.Date(DateParser.stringToDate(request.getParameter("registenddate")).getTime());
+        if(!assitMeeting.getRegistenddate().equals("")&&!assitMeeting.getRegistenddate().isEmpty()){
+            java.sql.Date registenddate=new java.sql.Date(DateParser.stringToDate(assitMeeting.getRegistenddate()).getTime());
             meeting.setRegistrationDeadline(registenddate);
         }
 
-        meeting.setRegistrationFee(request.getParameter("registrationfee"));
-        String institution_name=request.getParameter("institution_name");
+        meeting.setRegistrationFee(assitMeeting.getRegistrationfee());
+        String institution_name=assitMeeting.getInstitution_name();
         Institution institution=institutionRepo.findByInstitutionName(institution_name);
         meeting.setInstitution(institution);
-        meeting.setContactPerson(request.getParameter("contactperson"));
-        meeting.setEmail(request.getParameter("email"));
-        meeting.setPhone(request.getParameter("phone"));
-        meeting.setAccommodationAndTraffic(request.getParameter("traffic"));
+        meeting.setContactPerson(assitMeeting.getContactperson());
+        meeting.setEmail(assitMeeting.getEmail());
+        meeting.setPhone(assitMeeting.getPhone());
+        meeting.setAccommodationAndTraffic(assitMeeting.getTraffic());
 
-        String fileName = file.getOriginalFilename();
-        // 文件后缀
-        //String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        // 重新生成唯一文件名，用于存储数据库
-        //String newFileName = UUID.randomUUID().toString()+suffixName;
+        if (assitMeeting.getFile()==null||assitMeeting.getFile().isEmpty()){
+            String fileName = assitMeeting.getFile().getOriginalFilename();
+            // 文件后缀
+            //String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            // 重新生成唯一文件名，用于存储数据库
+            //String newFileName = UUID.randomUUID().toString()+suffixName;
 
-        String url=filePath + fileName;
-        //创建文件
-        File dest = new File(url);
-        url="154.8.211.55:8081/paper_model/"+fileName;
-        //newinstitution.setDownloadUrl(url);
-        meeting.setModelDownloadUrl(url);
-        try {
-            file.transferTo(dest);
-        } catch (IOException e) {
-            e.printStackTrace();
+            String url=filePath + fileName;
+            //创建文件
+            File dest = new File(url);
+            url="154.8.211.55:8081/paper_model/"+fileName;
+            //newinstitution.setDownloadUrl(url);
+            meeting.setModelDownloadUrl(url);
+            try {
+                assitMeeting.getFile().transferTo(dest);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
 
         meetingRepo.save(meeting);
         return meeting.getMeetingId();
