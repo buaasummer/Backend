@@ -35,6 +35,9 @@ public class Institution {
     //审核资料
     private String downloadUrl;
 
+    private String Logo;
+    private String description;
+
     public String getPostalAddress() {
         return postalAddress;
     }
@@ -105,5 +108,21 @@ public class Institution {
 
     public void setLegalPersonName(String legalPersonName) {
         this.legalPersonName = legalPersonName;
+    }
+
+    public String getLogo() {
+        return Logo;
+    }
+
+    public void setLogo(String logo) {
+        Logo = logo;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

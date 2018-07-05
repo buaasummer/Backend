@@ -93,7 +93,7 @@ public class MeetingController {
         meeting.setPhone(assitMeeting.getPhone());
         meeting.setAccommodationAndTraffic(assitMeeting.getTraffic());
 
-        if (assitMeeting.getFile()==null||assitMeeting.getFile().isEmpty()){
+        if (assitMeeting.getFile()!=null||!assitMeeting.getFile().isEmpty()){
             String fileName = assitMeeting.getFile().getOriginalFilename();
             // 文件后缀
             //String suffixName = fileName.substring(fileName.lastIndexOf("."));
