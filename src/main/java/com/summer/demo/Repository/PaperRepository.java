@@ -10,4 +10,5 @@ import java.util.List;
 public interface PaperRepository extends JpaRepository<Paper,Integer> {
     public List<Paper> findPapersByPersonalUserAndMeeting(PersonalUser personalUser,Meeting meeting);
     public List<Paper> findPapersByMeeting(Meeting meeting);
+    public Paper findPaperByMeetingAndNumber(Meeting meeting,int number);
 }

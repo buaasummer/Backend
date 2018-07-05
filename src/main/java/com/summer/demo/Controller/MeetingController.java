@@ -1,29 +1,26 @@
 package com.summer.demo.Controller;
 
+import com.summer.demo.Entity.*;
+import com.summer.demo.Repository.*;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.summer.demo.Entity.Meeting;
-import com.summer.demo.Repository.MeetingRepository;
-import org.springframework.web.multipart.MultipartFile;
 import com.summer.demo.StaticClass.DateParser;
-import com.summer.demo.Entity.Institution;
-import com.summer.demo.Repository.InstitutionRepository;
-import com.summer.demo.Entity.PersonalUser;
-import com.summer.demo.Repository.PersonalUserRepository;
 
 import com.summer.demo.AssitClass.AssitMeeting;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Date;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
 
 @CrossOrigin
 @RestController
 public class MeetingController {
     private String filePath="C:\\Users\\Administrator\\Documents\\release1\\upload\\paper_model\\";
+    private String url="http://154.8.211.55:8081/";
     @Autowired
     private MeetingRepository meetingRepo;
 
@@ -32,6 +29,15 @@ public class MeetingController {
 
     @Autowired
     private PersonalUserRepository personalUserRepo;
+
+    @Autowired
+    private PaperRepository paperRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
+
+    @Autowired
+    private ParticipantsRepository participantsRepository;
 
     //新建会议
     @PostMapping(value = "/meeting/create")
@@ -133,17 +139,83 @@ public class MeetingController {
         }
         else  return false;
     }
-
-    @GetMapping(value = "/meeting/personaluser_register")
-    public boolean normalUserRegister(@RequestParam(value = "user_id") int userId, @RequestParam(value = "meeting_id") int meetingId){
-        PersonalUser user=personalUserRepo.findByUserId(userId);
-        if(user!=null){
-            Meeting meeting=meetingRepo.findByMeetingId(meetingId);
-            if(meeting!=null){
-                //发送确认邮件
-                return true;
+    @PostMapping(value = "/meeting/Register/uploadFile")
+    public Boolean registerUpload(@RequestParam("participantsId") int participantsId
+                            , @RequestParam("file")MultipartFile file)
+    {
+        Participants participants=participantsRepository.getOne(participantsId);
+        BufferedOutputStream stream;
+        String downloadUrl="";
+        if(!file.isEmpty())
+        {
+            try {
+                byte[] bytes = file.getBytes();
+                String pathName="upload/charge/"+file.getOriginalFilename();
+                downloadUrl=url+"charge/"+file.getOriginalFilename();
+                File saveFile=new File(pathName);
+                stream = new BufferedOutputStream(new FileOutputStream(saveFile));
+                stream.write(bytes);
+                stream.flush();
+                stream.close();
+                participants.setDownloadUrl(downloadUrl);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false ;//提交论文失败
             }
         }
-        return false;
+        participantsRepository.save(participants);
+        return true;
+    }
+    @PostMapping(value = "/meeting/auditRegister/information")
+    public int auditorRegister(@RequestParam(value = "userId") int userId,
+                               @RequestParam(value = "meetingId") int meetingId,
+                               @RequestParam(value = "attenders") String attenders )
+    {
+        Participants participants=Register(userId,meetingId,attenders);
+        participants.setPaperNumber(0);
+        participantsRepository.save(participants);
+        return participants.getParticipantsId();
+    }
+    @PostMapping(value = "/meeting/authorRegister/information")
+    public int authorRegister(@RequestParam(value = "userId") int userId,
+                                      @RequestParam(value = "meetingId") int meetingId
+                                        , @RequestParam(value = "number") int number
+                                        , @RequestParam(value = "participants") String attenders){
+        Paper paper=paperRepository.findPaperByMeetingAndNumber(meetingRepo.findByMeetingId(meetingId),number);
+        if(paper.getStatus()!=1&&paper.getStatus()!=2)
+            return -1;//您目前还没有被该会议录用的论文
+        Participants participants=Register(meetingId,userId,attenders);
+        participants.setPaperNumber(number);
+        participantsRepository.save(participants);
+        return participants.getParticipantsId();
+    }
+
+    public Participants Register(int meetingId,int uerId,String attenders)
+    {
+        JSONArray jsonArray=JSONArray.fromObject(attenders);
+        Object[] participantList=jsonArray.toArray();
+        Participants participants=new Participants();
+        PersonalUser personalUser=personalUserRepo.findByUserId(uerId);
+        Meeting meeting=meetingRepo.findByMeetingId(meetingId);
+        participants.setMeeting(meeting);
+        participants.setPersonalUser(personalUser);
+        String participantIds="";
+        for(int i=0;i<participantList.length;i++)
+        {
+            JSONObject jsonObject=JSONObject.fromObject(participantList[i]);
+            Participant participant=new Participant();
+            if(i!=participantList.length-1)
+                participantIds+=participant.getParticipantId()+",";
+            else
+                participantIds+=participant.getParticipantId();
+            participant.setName(jsonObject.getString("name"));
+            participant.setGender(jsonObject.getString("gender"));
+            participant.setEmail(jsonObject.getString("email"));
+            participant.setBookAccommodation(jsonObject.getString("bookAccommodation"));
+            participantRepository.save(participant);
+        }
+        participants.setParticipantIdList(participantIds);
+        participantsRepository.save(participants);
+        return participants;
     }
 }

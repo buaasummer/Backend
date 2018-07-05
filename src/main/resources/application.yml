@@ -15,7 +15,7 @@ spring:
       max-file-size: 30Mb
       max-request-size: 30Mb
   resources:
-    static-locations: file:C:\Users\Administrator\Documents\backend\upload
+    static-locations: file:C:\Users\Administrator\Documents\release1\upload
   mail:
     default-encoding: UTF-8
     host: smtp.163.com
