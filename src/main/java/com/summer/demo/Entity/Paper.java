@@ -13,6 +13,15 @@ public class Paper {
 
     private String  authorIds;
     private String  paperAbstract;
+    private int number;
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     @ManyToOne
     @JoinColumn(name = "user_id",foreignKey = @ForeignKey(name = "PERSONALUSER_USER_ID_FK"))

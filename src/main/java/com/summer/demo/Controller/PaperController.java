@@ -68,7 +68,20 @@ public class PaperController {
     public Boolean paperSubmit(@RequestParam("paperId") int paperId,
                             CustomizedPaper customizedPaper)
     {
-        return updatePaper(paperId,customizedPaper);
+        Boolean flag=updatePaper(paperId,customizedPaper);
+        Paper paper=paperRepository.getOne(paperId);
+        Meeting meeting=paper.getMeeting();
+        int count=paperRepository.findPapersByMeeting(meeting).size();
+        paper.setNumber(count);
+        SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
+        simpleMailMessage.setFrom("m13121210685@163.com");
+        simpleMailMessage.setTo(paper.getPersonalUser().getEmail());
+        simpleMailMessage.setSubject(""+paper.getPersonalUser().getUsername()+
+                "您已经成功在"+paper.getMeeting().getTitle()+"投稿");
+        simpleMailMessage.setText("感谢您的投稿，您的论文题目是"+paper.getTitle()+"\n编号为"+paper.getNumber());
+        jms.send(simpleMailMessage);
+        paperRepository.save(paper);
+        return flag;
     }
 
     @PostMapping(value="/paper/update")
