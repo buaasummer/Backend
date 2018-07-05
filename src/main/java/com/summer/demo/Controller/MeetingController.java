@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.summer.demo.StaticClass.DateParser;
 import com.summer.demo.Entity.Institution;
 import com.summer.demo.Repository.InstitutionRepository;
+import com.summer.demo.Entity.PersonalUser;
+import com.summer.demo.Repository.PersonalUserRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,9 @@ public class MeetingController {
 
     @Autowired
     private InstitutionRepository institutionRepo;
+
+    @Autowired
+    private PersonalUserRepository personalUserRepo;
 
     //新建会议
     @PostMapping(value = "/meeting/create")
@@ -122,5 +127,18 @@ public class MeetingController {
             return true;
         }
         else  return false;
+    }
+
+    @GetMapping(value = "/meeting/personaluser_register")
+    public boolean normalUserRegister(@RequestParam(value = "user_id") int userId, @RequestParam(value = "meeting_id") int meetingId){
+        PersonalUser user=personalUserRepo.findByUserId(userId);
+        if(user!=null){
+            Meeting meeting=meetingRepo.findByMeetingId(meetingId);
+            if(meeting!=null){
+                //发送确认邮件
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -43,6 +43,7 @@ public class SearchController {
         java.util.Date currentDate=new java.util.Date();
         java.sql.Date curdate=new java.sql.Date(DateParser.stringToDate(format1.format(currentDate)).getTime());
         System.out .println(curdate.toString());
+        if(isOnPosting==1&&isOnRegistration==1)return null;
         if(isOnPosting==1){
             meetingList=meetingRepo.findAllByGivenPost(keyword,startdate,enddate,curdate,pageable).getContent();
             return meetingList;
