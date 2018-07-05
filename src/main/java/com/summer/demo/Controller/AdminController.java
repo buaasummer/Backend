@@ -59,7 +59,7 @@ public class AdminController {
         return 0;
     }
 
-    /*
+
     @GetMapping(value = "/admin/register")
     public Administrator adminRegister(){
         Administrator admin=new Administrator();
@@ -73,7 +73,7 @@ public class AdminController {
         adminRepo.save(admin);
         return admin;
     }
-    */
+
 
     @GetMapping(value = "/admin/apply")
     public List<Application> getAllApply(){

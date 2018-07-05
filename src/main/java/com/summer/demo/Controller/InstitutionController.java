@@ -194,11 +194,11 @@ public class InstitutionController{
         return null;
     }
 
-    @PostMapping(value = "/intitution/set_description/{institution_id}")
-    public String setDescription(@PathVariable("institution_id") int institution_id, HttpServletRequest httpServletRequest){
+    @PostMapping(value = "/institution/set_description/{institution_id}")
+    public String setDescription(@PathVariable("institution_id") int institution_id, @RequestParam(value = "description") String s){
         Institution institution=institutionRepo.findByInstitutionId(institution_id);
         if(institution!=null){
-            institution.setDescription(httpServletRequest.getParameter("description"));
+            institution.setDescription(s);
             return institution.getDescription();
         }
         return null;
