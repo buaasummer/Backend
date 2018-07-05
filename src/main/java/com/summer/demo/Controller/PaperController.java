@@ -92,10 +92,12 @@ public class PaperController {
         {
             Paper paper=paperRepository.getOne(paperId);
             paper.setStatus(6);
+            paperRepository.save(paper);
             return true;
         }
-        else
+        else {
             return false;
+        }
     }
 
     @CrossOrigin
@@ -166,6 +168,7 @@ public class PaperController {
             bigPaper.setPaperAbstract(paper.getPaperAbstract());
             bigPaper.setDownloadUrl(paper.getDownloadUrl());
             bigPaper.setStatus(paper.getStatus());
+            bigPaper.setNumber(paper.getNumber());
             String str=paper.getAuthorIds();
             String[] strings=str.split(",");
             String names="";

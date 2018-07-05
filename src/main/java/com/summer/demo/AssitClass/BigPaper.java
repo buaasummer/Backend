@@ -18,6 +18,15 @@ public class BigPaper {
 
     //论文下载url
     private String downloadUrl;
+    private int number;
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     public int getPaperId() {
         return paperId;
