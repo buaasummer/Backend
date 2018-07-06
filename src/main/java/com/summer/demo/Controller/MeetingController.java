@@ -50,6 +50,57 @@ public class MeetingController {
         //if(file==null)return 0;//附件上传错误
         if(assitMeeting.getInstitution_name().equals("")||assitMeeting.getInstitution_name().isEmpty())return 0;//无id
         Meeting meeting = new Meeting();
+        parseAssitMeeting(assitMeeting, meeting);
+        if (assitMeeting.getFile()!=null||!assitMeeting.getFile().isEmpty()){
+            String fileName = assitMeeting.getFile().getOriginalFilename();
+            // 文件后缀
+            //String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            // 重新生成唯一文件名，用于存储数据库
+            //String newFileName = UUID.randomUUID().toString()+suffixName;
+
+            String url=filePath + fileName;
+            //创建文件
+            File dest = new File(url);
+            url="154.8.211.55:8081/paper_model/"+fileName;
+            //newinstitution.setDownloadUrl(url);
+            meeting.setModelDownloadUrl(url);
+            try {
+                assitMeeting.getFile().transferTo(dest);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        meetingRepo.save(meeting);
+        return meeting.getMeetingId();
+    }
+
+    @PostMapping(value ="/meeting/modify/{meeting_id}")
+    public int modifyMeeting(AssitMeeting assitMeeting, @PathVariable(value = "meeting_id") int meetingId){
+        Meeting meeting=meetingRepo.findByMeetingId(meetingId);
+        if(meeting!=null){
+            parseAssitMeeting(assitMeeting, meeting);
+            if(assitMeeting.getFile()!=null){
+                String fileName = assitMeeting.getFile().getOriginalFilename();
+                System.out.println("in if");
+                String url=filePath + fileName;
+                //创建文件
+                File dest = new File(url);
+                url="154.8.211.55:8081/paper_model/"+fileName;
+                //newinstitution.setDownloadUrl(url);
+                meeting.setModelDownloadUrl(url);
+                try {
+                    assitMeeting.getFile().transferTo(dest);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            meetingRepo.save(meeting);
+            return meeting.getMeetingId();
+        }
+        return 0;
+    }
+
+    private void parseAssitMeeting(AssitMeeting assitMeeting, Meeting meeting){
         meeting.setTitle(assitMeeting.getTitle());
         meeting.setIntroduction(assitMeeting.getIntroduction());
         meeting.setAddress(assitMeeting.getAddress());
@@ -97,30 +148,6 @@ public class MeetingController {
         meeting.setEmail(assitMeeting.getEmail());
         meeting.setPhone(assitMeeting.getPhone());
         meeting.setAccommodationAndTraffic(assitMeeting.getTraffic());
-
-        if (assitMeeting.getFile()!=null||!assitMeeting.getFile().isEmpty()){
-            String fileName = assitMeeting.getFile().getOriginalFilename();
-            // 文件后缀
-            //String suffixName = fileName.substring(fileName.lastIndexOf("."));
-            // 重新生成唯一文件名，用于存储数据库
-            //String newFileName = UUID.randomUUID().toString()+suffixName;
-
-            String url=filePath + fileName;
-            //创建文件
-            File dest = new File(url);
-            url="154.8.211.55:8081/paper_model/"+fileName;
-            //newinstitution.setDownloadUrl(url);
-            meeting.setModelDownloadUrl(url);
-            try {
-                assitMeeting.getFile().transferTo(dest);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        meetingRepo.save(meeting);
-        return meeting.getMeetingId();
     }
 
     //获得某个会议信息
