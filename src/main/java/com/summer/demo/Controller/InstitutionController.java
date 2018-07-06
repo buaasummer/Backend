@@ -29,7 +29,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 public class InstitutionController{
-    private String filePath="C:\\Users\\Administrator\\Documents\\release1\\upload\\certify_file\\";
+    private String filePath="C:\\Users\\Administrator\\Documents\\release1\\upload\\";
 
     @Autowired
     private InstitutionUserRepository userRepo;
@@ -81,7 +81,7 @@ public class InstitutionController{
             // 重新生成唯一文件名，用于存储数据库
             String newFileName = UUID.randomUUID().toString()+suffixName;
 
-            String url=filePath + newFileName;
+            String url=filePath +"certify_file//"+ newFileName;
             //创建文件
             File dest = new File(url);
             url="154.8.211.55:8081/certify_file/"+newFileName;
@@ -93,9 +93,11 @@ public class InstitutionController{
             }
             apply.setInstitution(newinstitution);
             apply.setTime(new java.util.Date().toString());
+            apply.setInstitutionuser(newuser);
             institutionRepo.save(newinstitution);
-            applyRepo.save(apply);
+
             userRepo.save(newuser);
+            applyRepo.save(apply);
 
             return 1;
         }
@@ -168,8 +170,42 @@ public class InstitutionController{
                 return 0;//后台错误
             }
         }
-            userRepo.save(institutionUser);
-            return 1;
+        userRepo.save(institutionUser);
+        return 1;
+    }
+
+    @PostMapping(value = "institution/set_logo/{institution_id}")
+    public String setLogo(@PathVariable(value = "institution_id") int institution_id, @RequestParam("img") MultipartFile file){
+        Institution institution=institutionRepo.findByInstitutionId(institution_id);
+        if(institution!=null){
+            if(!file.isEmpty()&&file!=null){
+                String filename=file.getOriginalFilename();
+                String url=filePath +"institution//"+ filename;
+                //创建文件
+                File dest = new File(url);
+                url="http://154.8.211.55:8081/institution/"+filename;
+                institution.setLogo(url);
+                try {
+                    file.transferTo(dest);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                institutionRepo.save(institution);
+                return url;
+            }
+        }
+        return null;
+    }
+
+    @PostMapping(value = "/institution/set_description/{institution_id}")
+    public String setDescription(@PathVariable("institution_id") int institution_id, @RequestParam(value = "description") String s){
+        Institution institution=institutionRepo.findByInstitutionId(institution_id);
+        if(institution!=null){
+            institution.setDescription(s);
+            institutionRepo.save(institution);
+            return institution.getDescription();
+        }
+        return null;
     }
 
 }
