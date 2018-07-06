@@ -93,6 +93,7 @@ public class InstitutionController{
             }
             apply.setInstitution(newinstitution);
             apply.setTime(new java.util.Date().toString());
+            apply.setInstitutionuser(newuser);
             institutionRepo.save(newinstitution);
             applyRepo.save(apply);
             userRepo.save(newuser);
@@ -181,13 +182,14 @@ public class InstitutionController{
                 String url=filePath +"institution//"+ filename;
                 //创建文件
                 File dest = new File(url);
-                url="154.8.211.55:8081/institution/"+filename;
+                url="http://154.8.211.55:8081/institution/"+filename;
                 institution.setLogo(url);
                 try {
                     file.transferTo(dest);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                institutionRepo.save(institution);
                 return url;
             }
         }
@@ -199,6 +201,7 @@ public class InstitutionController{
         Institution institution=institutionRepo.findByInstitutionId(institution_id);
         if(institution!=null){
             institution.setDescription(s);
+            institutionRepo.save(institution);
             return institution.getDescription();
         }
         return null;
