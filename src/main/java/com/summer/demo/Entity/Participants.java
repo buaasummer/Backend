@@ -11,11 +11,11 @@ public class Participants {
     private String participantIdList;
     private int paperNumber;
     @ManyToOne
-    @JoinColumn(name = "user_id",foreignKey = @ForeignKey(name = "PERSONALUSER_USER_ID_FK"))
+    @JoinColumn(name = "user_id")
     private PersonalUser personalUser;
 
     @ManyToOne
-    @JoinColumn(name = "meeting_id",foreignKey = @ForeignKey(name ="MEETING_MEETING_ID_FK"))
+    @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 
     //缴费证明文件

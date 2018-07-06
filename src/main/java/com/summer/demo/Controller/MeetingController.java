@@ -1,5 +1,7 @@
 package com.summer.demo.Controller;
 
+import com.summer.demo.AssitClass.Auditors;
+import com.summer.demo.AssitClass.CusParticipants;
 import com.summer.demo.Entity.*;
 import com.summer.demo.Repository.*;
 import net.sf.json.JSONArray;
@@ -15,6 +17,9 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -160,7 +165,7 @@ public class MeetingController {
                 participants.setDownloadUrl(downloadUrl);
             } catch (Exception e) {
                 e.printStackTrace();
-                return false ;//提交论文失败
+                return false ;
             }
         }
         participantsRepository.save(participants);
@@ -169,7 +174,7 @@ public class MeetingController {
     @PostMapping(value = "/meeting/auditRegister/information")
     public int auditorRegister(@RequestParam(value = "userId") int userId,
                                @RequestParam(value = "meetingId") int meetingId,
-                               @RequestParam(value = "attenders") String attenders )
+                               @RequestParam(value = "participants") String attenders)
     {
         Participants participants=Register(userId,meetingId,attenders);
         participants.setPaperNumber(0);
@@ -189,6 +194,96 @@ public class MeetingController {
         participantsRepository.save(participants);
         return participants.getParticipantsId();
     }
+    @GetMapping(value = "/meeting/getAuthorRegisterInfo")
+    public List<CusParticipants> getRegisterInfo(@RequestParam("meetingId") int meetingId)
+    {
+        Meeting meeting=meetingRepo.findByMeetingId(meetingId);
+        List<Participants> participantsList=participantsRepository.findAuthorParticipants(meetingId);
+        List<CusParticipants> cusParticipantsList=new ArrayList<>();
+        for(int i=0;i<participantsList.size();i++)
+        {
+            Participants participants=participantsList.get(i);
+            Paper paper=paperRepository.findPaperByMeetingAndNumber(meeting,participants.getPaperNumber());
+            CusParticipants cusParticipants=new CusParticipants();
+            cusParticipants.setPaperNumber(participants.getPaperNumber());
+            cusParticipants.setDownloadUrl(participants.getDownloadUrl());
+            cusParticipants.setPaperTitle(paper.getTitle());
+            String participantIdList=participants.getParticipantIdList();
+            String[] participantIds=participantIdList.split(",");
+            String names="";
+            String genders="";
+            String emails="";
+            String bookAccommodations="";
+            for(int j=0;j<participantIds.length;j++)
+            {
+                int participantId=Integer.parseInt(participantIds[j]);
+                Participant participant=participantRepository.getOne(participantId);
+                if(j!=participantIds.length-1) {
+                    names += participant.getName() + ",";
+                    genders += participant.getGender() + ",";
+                    emails += participant.getEmail() + ",";
+                    bookAccommodations += participant.getBookAccommodation() + ",";
+                }
+                else
+                {
+                    names += participant.getName();
+                    genders += participant.getGender();
+                    emails += participant.getEmail();
+                    bookAccommodations += participant.getBookAccommodation();
+                }
+            }
+            cusParticipants.setNames(names);
+            cusParticipants.setGenders(genders);
+            cusParticipants.setEmails(emails);
+            cusParticipants.setBookAccommodations(bookAccommodations);
+            cusParticipantsList.add(cusParticipants);
+        }
+        return cusParticipantsList;
+    }
+    @GetMapping(value = "/meeting/auditorRegisterInfo")
+    public List<Auditors> getAuditorsInfo(@RequestParam("meetingId") int meetingId)
+    {
+        Meeting meeting=meetingRepo.findByMeetingId(meetingId);
+        List<Participants> participantsList=participantsRepository.findAuditParticipants(meetingId);
+        List<Auditors> auditorsList=new ArrayList<>();
+        for(int i=0;i<participantsList.size();i++)
+        {
+            Participants participants=participantsList.get(i);
+            Auditors auditors=new Auditors();
+            auditors.setDownloadUrl(participants.getDownloadUrl());
+            String participantIdList=participants.getParticipantIdList();
+            String[] participantIds=participantIdList.split(",");
+            String names="";
+            String genders="";
+            String emails="";
+            String bookAccommodations="";
+            for(int j=0;j<participantIds.length;j++)
+            {
+                int participantId=Integer.parseInt(participantIds[j]);
+                Participant participant=participantRepository.getOne(participantId);
+                if(j!=participantIds.length-1) {
+                    names += participant.getName() + ",";
+                    genders += participant.getGender() + ",";
+                    emails += participant.getEmail() + ",";
+                    bookAccommodations += participant.getBookAccommodation() + ",";
+                }
+                else
+                {
+                    names += participant.getName();
+                    genders += participant.getGender();
+                    emails += participant.getEmail();
+                    bookAccommodations += participant.getBookAccommodation();
+                }
+            }
+            auditors.setNames(names);
+            auditors.setGenders(genders);
+            auditors.setEmails(emails);
+            auditors.setBookAccommodations(bookAccommodations);
+            auditorsList.add(auditors);
+        }
+        return auditorsList;
+    }
+
 
     public Participants Register(int meetingId,int uerId,String attenders)
     {
@@ -204,18 +299,25 @@ public class MeetingController {
         {
             JSONObject jsonObject=JSONObject.fromObject(participantList[i]);
             Participant participant=new Participant();
-            if(i!=participantList.length-1)
-                participantIds+=participant.getParticipantId()+",";
-            else
-                participantIds+=participant.getParticipantId();
             participant.setName(jsonObject.getString("name"));
             participant.setGender(jsonObject.getString("gender"));
             participant.setEmail(jsonObject.getString("email"));
             participant.setBookAccommodation(jsonObject.getString("bookAccommodation"));
             participantRepository.save(participant);
+            if(i!=participantList.length-1)
+            {
+                participantIds+=participant.getParticipantId()+",";
+            }
+            else
+                participantIds+=participant.getParticipantId();
         }
         participants.setParticipantIdList(participantIds);
         participantsRepository.save(participants);
         return participants;
     }
+
+
+
+
+
 }
