@@ -95,8 +95,9 @@ public class InstitutionController{
             apply.setTime(new java.util.Date().toString());
             apply.setInstitutionuser(newuser);
             institutionRepo.save(newinstitution);
-            applyRepo.save(apply);
+
             userRepo.save(newuser);
+            applyRepo.save(apply);
 
             return 1;
         }
