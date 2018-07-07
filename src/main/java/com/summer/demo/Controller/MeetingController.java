@@ -61,7 +61,7 @@ public class MeetingController {
             String url=filePath + fileName;
             //创建文件
             File dest = new File(url);
-            url="154.8.211.55:8081/paper_model/"+fileName;
+            url="http://154.8.211.55:8081/paper_model/"+fileName;
             //newinstitution.setDownloadUrl(url);
             meeting.setModelDownloadUrl(url);
             try {
@@ -85,7 +85,7 @@ public class MeetingController {
                 String url=filePath + fileName;
                 //创建文件
                 File dest = new File(url);
-                url="154.8.211.55:8081/paper_model/"+fileName;
+                url="http://154.8.211.55:8081/paper_model/"+fileName;
                 //newinstitution.setDownloadUrl(url);
                 meeting.setModelDownloadUrl(url);
                 try {

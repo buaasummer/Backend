@@ -15,6 +15,7 @@ public class ExpandPaper {
     private String downloadUrl;
 
     private String email;
+    private int number;
 
     public ExpandPaper(BigPaper bigPaper)
     {
@@ -25,7 +26,16 @@ public class ExpandPaper {
         this.organizations=bigPaper.getOrganizations();
         this.status=bigPaper.getStatus();
         this.downloadUrl=bigPaper.getDownloadUrl();
+        this.number=bigPaper.getNumber();
         this.email="";
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public int getPaperId() {
